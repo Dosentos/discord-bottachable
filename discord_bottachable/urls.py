@@ -19,6 +19,6 @@ from django.contrib import admin
 import discord_bottachable.views
 
 urlpatterns = [
-    url(r'^$', discord_bottachable.views.index, name='index'),
-    url(r'^admin/', admin.site.urls),
+    # url(r'^$', discord_bottachable.views.index, name='index'),
+    # url(r'^admin/', admin.site.urls),
 ]

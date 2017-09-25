@@ -37,7 +37,7 @@ Discord bot that gathers all links shared in the specified channel and posts the
         DEBUG = True
 
         # Discord authentication stuff
-        DISCORD_TOKEN = ''
+        DISCORD_BOT_TOKEN = = ''
         ```
 
 
