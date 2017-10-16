@@ -211,7 +211,4 @@ except ImportError:
 
 RAVEN_CONFIG = {
     'dsn': 'https://%s@sentry.io/230348' % (SENTRY_KEY),
-    # If you are using git, you can also automatically configure the
-    # release based on the git info.
-    'release': raven.fetch_git_sha("../"),
 }
