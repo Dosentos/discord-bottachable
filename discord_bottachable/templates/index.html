@@ -1,9 +1,17 @@
 {% extends "base.html" %} 
-{% load staticfiles %} 
+{% load staticfiles %}
+
+{% block jumbotron %}
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-3">Discord Bottachable</h1>
+    <p class="lead">asdasdsad</p>
+  </div>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="row">
-    <h1>Hello World</h1>
     {% if servers.count == 0 %}
         <h2>Looks like I'm not in any server yet :(</h2>
         <p>Click <a href="#">here</a> to add me to your own server!</p>
