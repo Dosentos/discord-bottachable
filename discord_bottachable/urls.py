@@ -20,7 +20,7 @@ import discord_bottachable.views
 
 urlpatterns = [
     url(r'^$', discord_bottachable.views.index, name='index'),
-    url(r'^(?P<server_id>[0-9]+)/$', discord_bottachable.views.server,
+    url(r'^(?P<server_id>[0-9]+)/(?:tags/(?P<tags>(\w(,\w)*)*))?$', discord_bottachable.views.server,
         name='server'),
     url(r'^admin/', admin.site.urls),
 ]

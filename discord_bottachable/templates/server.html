@@ -52,7 +52,19 @@
                     </a>
                     <p class="card-text">{{l.description}}</p>
                     {% for t in l.tags.all %}
-                        <span style="white-space: initial;" class="badge badge-pill badge-secondary">{{t.name}}</span>
+                        {% if t.name not in tags and tags|length > 0 %}
+                            <a href="/{{kwargs.server_id}}/tags/{{current_tags}},{{t.name}}">
+                                <span class="badge badge-pill badge-secondary">{{t.name}}</span>
+                            </a>
+                        {% elif t.name in tags and tags|length > 0 %}
+                            <a href="/{{kwargs.server_id}}/tags/{{current_tags}}">
+                                <span class="badge badge-pill badge-secondary">{{t.name}}</span>
+                            </a>
+                        {% else %}
+                            <a href="/{{server_id}}/tags/{{t.name}}">
+                                <span class="badge badge-pill badge-secondary">{{t.name}}</span>
+                            </a>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
