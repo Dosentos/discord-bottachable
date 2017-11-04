@@ -36,7 +36,6 @@ def server(request, server_id, tags):
         'links': links,
         'server_id': server_id,
         'server_name': s.name,
-        'kwargs': request.resolver_match.kwargs,
         'tags': tags_array,
         'current_tags': current_tags 
     })
