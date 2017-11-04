@@ -6,7 +6,6 @@ from pprint import pprint
 import asyncio
 import discord
 import logging
-import pdb
 import re
 
 # Create an instance of logger
@@ -30,7 +29,6 @@ async def on_ready():
 # In here happens all the magic...
 @client.event
 async def on_message(message):
-
     if message.content.startswith('!test'):
         counter = 0
         tmp = await client.send_message(message.channel, 'Calculating messages...')
@@ -44,7 +42,6 @@ async def on_message(message):
         await client.send_message(message.channel, 'Done sleeping')
 
     elif message.content.startswith('!link'):
-        await asyncio.sleep(2)
         message_saved, error_message = handle_link(message)
         if message_saved:
             await client.send_message(message.channel, "Thank you, link published on discord-bottachable.discordapp.com")
@@ -100,43 +97,24 @@ async def on_message(message):
         logger.info("----------")
         await client.send_message(message.channel, "Tags deleted")
 
-    elif message.content.startswith('!asd'):
-        print("EMBEDS OUSIDE:\n%s"% message.embeds)
-        if message.embeds:
-            print(find_embed_details(message.embeds))
-        else:
-            logger.info("##############No embeds")
-
-@client.event
-async def on
-
 # This function handles all the messages containing '!link'
 def handle_link(message):
     errors = ''
     msg = re.sub('\!link', '', message.content)
-
     if 'http://' in msg or 'https://' in msg or 'www.' in msg:
-        if message.embeds:
-            logger.info("--------------EMBEDS:")
-            print(message.embeds)
-            link_details = find_embed_details(message.embeds)
-            print(link_details)
+        message_dict = split_link_message(msg)
+
+        if message_dict['url'] != '':
+            saved, errors = link_to_db(message.author.id, message.channel.id, message.server, message_dict)
+
+            if saved:
+                return (True, errors)
         else:
-            logger.info("##############No embeds")
-
-    #     message_dict = split_link_message(msg)
-
-    #     if message_dict['url'] != '':
-    #         saved, errors = link_to_db(message.author.id, message.channel.id, message.server, message_dict)
-
-    #         if saved:
-    #             return (True, errors)
-    #     else:
-    #         logger.info("split_link_message function could not find the url")
-    #         errors = "%sCould not find the url from the message\n" % (errors)
-    # else:
-    #     logger.info("Link does not contain correct prefix")
-    #     errors = "%sThere was no 'https:', 'http:' or 'www.' prefix in your link\n" % (errors)
+            logger.info("split_link_message function could not find the url")
+            errors = "%sCould not find the url from the message\n" % (errors)
+    else:
+        logger.info("Link does not contain correct prefix")
+        errors = "%sThere was no 'https:', 'http:' or 'www.' prefix in your link\n" % (errors)
 
     return (False, errors)
 
@@ -147,6 +125,7 @@ def split_link_message(msg):
     title = False
     tags = False
     url_set = False
+    logger.info(msg)
     splitted_message = re.split('(tags:|title:)', msg)
 
     for part in splitted_message:
@@ -178,6 +157,7 @@ def split_link_message(msg):
     message_dict['url'] = message_dict['url'].strip(" ")
     message_dict['title'] = message_dict['title'].strip(' ')
     message_dict['tags'] = message_dict['tags'].strip(' ')
+    logger.info("#%s#" % (message_dict['tags']))
     return message_dict
 
 # This function saves a link to database
@@ -231,29 +211,5 @@ def link_to_db(user_id, channel_id, server, message_dict):
         return False, errors
 
     logger.info("Saved! url: %s\ntitle: %s\ntags: %s" %(message_dict['url'],message_dict['title'],message_dict['tags']))
+    logger.info("----------")
     return True, errors
-
-def find_embed_details(em):
-    print("------------INSIDE find_embed_details")
-    embed_details = {'title': '', 'description': '', 'media_url':''}
-    for i in em:
-        try:
-            embed_details['title'] = i['title']
-        except KeyError:
-            logger.info("No title in embeds")
-        try:
-            embed_details['description'] = i['description']
-        except KeyError:
-            logger.info("No description in embeds")
-        # if 'video' in em:
-        #     try:
-        #         embed_details['media_url'] = i['thumbnail']['url']
-        #     except KeyError:
-        #         logger.info("No thumbnail in embeds")
-        # else:
-        #     try:
-        #         logger.info("No 'video' in embeds")
-        #         embed_details['media_url']
-
-    logger.info("")
-    return embed_details
