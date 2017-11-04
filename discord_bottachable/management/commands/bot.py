@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from discord_bottachable.models import User, Link, Tag, Server
 from pprint import pprint
 
+import urllib.request
 import asyncio
 import discord
 import logging
@@ -51,7 +52,7 @@ async def handle_messages(message):
     elif message.content.startswith('!link'):
         message_saved = False
         error_message = ''
-        # message_saved, error_message = handle_link(message)
+        message_saved, error_message = handle_link(message)
         if message_saved:
             await client.send_message(message.channel, "Thank you, link published on discord-bottachable.discordapp.com")
         else:
@@ -112,9 +113,10 @@ def handle_link(message):
     msg = re.sub('\!link', '', message.content)
     if 'http://' in msg or 'https://' in msg or 'www.' in msg:
         message_dict = split_link_message(msg)
-
+        message_dict.update(get_embeds(message.embeds))
         if message_dict['url'] != '':
             saved, errors = link_to_db(message.author.id, message.channel.id, message.server, message_dict)
+            pass
 
             if saved:
                 return (True, errors)
@@ -134,7 +136,7 @@ def split_link_message(msg):
     title = False
     tags = False
     url_set = False
-    logger.info(msg)
+    logger.info("Message: %s" % (msg))
     splitted_message = re.split('(tags:|title:)', msg)
 
     for part in splitted_message:
@@ -166,7 +168,6 @@ def split_link_message(msg):
     message_dict['url'] = message_dict['url'].strip(" ")
     message_dict['title'] = message_dict['title'].strip(' ')
     message_dict['tags'] = message_dict['tags'].strip(' ')
-    logger.info("#%s#" % (message_dict['tags']))
     return message_dict
 
 # This function saves a link to database
@@ -180,6 +181,12 @@ def link_to_db(user_id, channel_id, server, message_dict):
 
     tags = message_dict['tags'].split(",")
 
+    if message_dict['media_url'] = '':
+        message_dict['media_url'] = '%s/pic/no_thumbnail.png' % (STATIC_URL)
+    if message_dict['title'] = '':
+        message_dict['title'] = findTitle(message_dict['url'])
+    if message_dict['description'] = '':
+        pass
     try:
         # Create or retrieve user
         user, created_user = User.objects.get_or_create(discord_id=user_id)
@@ -199,9 +206,9 @@ def link_to_db(user_id, channel_id, server, message_dict):
             defaults={
                 'user_id': user,
                 'channel_id': channel_id,
-                'description': "Vivamus imperdiet ligula a lacus congue eleifend id at dui. Cras nec tempor dui. Donec urna neque, pulvinar et felis eu, hendrerit dignissim urna. Donec consequat rutrum diam, tincidunt vulputate augue. Quisque lobortis condimentum hendrerit. Praesent id nulla id erat convallis molestie. Praesent risus ante, euismod nec massa id, pharetra commodo sapien.",
+                'description':message_dict['description'],
                 'title': message_dict['title'],
-                'media_url': 'https://media.mustijamirri.fi/media/wysiwyg/Musti_ja_Mirri/Artikkelit/kissa2.jpg',
+                'media_url': message_dict['media_url'],
             }
         )
 
@@ -222,3 +229,34 @@ def link_to_db(user_id, channel_id, server, message_dict):
     logger.info("Saved! url: %s\ntitle: %s\ntags: %s" %(message_dict['url'],message_dict['title'],message_dict['tags']))
     logger.info("----------")
     return True, errors
+
+def get_embeds(embeds):
+    embeds_dict = {'description':'', 'media_url':'','title':''}
+    for e in embeds:
+        if 'description'  in e:
+            embeds_dict['description'] = e['description']
+        else:
+            logger.info('Embeds have no description!')
+        if 'title' in e:
+            embeds_dict['title'] = e['title']
+        else:
+            logger.info('Embeds have no title!')
+        if 'thumbnail' in e and 'url' in e['thumbnail']:
+            embeds_dict['media_url'] = e['thumbnail']['url']
+        else:
+            logger.info('Embeds have no thubnail or thubnail url!')
+    return embeds_dict
+
+
+# THIS FUNCTION IS VERY BAD!!!
+# If there's no </title> tag on the site it returns all the html after starting tag
+# If there's no start tag, it throws an indexError: list index out of range
+# Maybe use something else
+# IF THIS IS CHANGED TAKE OFF urllib.request IMPORT TOO
+
+#TODO: Change the method or add handling in case there's no title in the link
+# return 'Untitled' if no title is found!
+def findTitle(url):
+    webpage = urllib.request.urlopen(url).read()
+    title = str(webpage).split('<title>')[1].split('</title>')[0]
+    return title
