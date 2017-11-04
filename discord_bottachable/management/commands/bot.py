@@ -226,6 +226,7 @@ def link_to_db(user_id, channel_id, server, message_dict):
     logger.info("----------")
     return True, errors
 
+# this function saves the specific embeds to embeds_dicts and returns them
 def get_embeds(embeds):
     embeds_dict = {'description':'', 'media_url':'','title':''}
     for e in embeds:
@@ -243,11 +244,14 @@ def get_embeds(embeds):
             logger.info('Embeds have no thubnail or thubnail url!')
     return embeds_dict
 
-
-
+# This function is called if no title has been found elsewhere. 
+# It simply tries to find the title from the website in the url
 def findTitle(url):
+    # Get the html from the url
     webpage = urllib.request.urlopen(url).read()
+    # Create an instance of beautifulSoup
     soup = BeautifulSoup(webpage, 'html.parser')
+    # Find title tag
     if soup.title:
         title = soup.title.string
     else:
