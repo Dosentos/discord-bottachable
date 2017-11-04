@@ -203,12 +203,12 @@ STATICFILES_DIRS = [
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+RAVEN_CONFIG = {
+    'dsn': 'https://%s@sentry.io/230348' % (SENTRY_KEY),
+}
 
 try:
   from local_settings import *
 except ImportError:
   pass
 
-RAVEN_CONFIG = {
-    'dsn': 'https://%s@sentry.io/230348' % (SENTRY_KEY),
-}

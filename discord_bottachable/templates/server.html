@@ -44,7 +44,11 @@
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
             <div class="card">
                 <a href="{{l.source}}">
-                    <img style="height: 200px;" class="card-img-top" src="{{l.media_url}}" alt="Card image cap">
+                    {% if l.media_url == '/pic/no_thumbnail.png' %}
+                        <img style="height: 200px;" class="card-img-top" src="{% static l.media_url %}" alt="Card image cap" title="{{l.source}}" />
+                    {% else %}
+                        <img style="height: 200px;" class="card-img-top" src="{{l.media_url}}" alt="Card image cap" title="{{l.source}}" />
+                    {% endif %}
                 </a>
                 <div class="card-body">
                     <a href="{{l.source}}">

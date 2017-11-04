@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from discord_bottachable import settings
 from django.core.management.base import BaseCommand
 from discord_bottachable.models import User, Link, Tag, Server
@@ -116,8 +117,6 @@ def handle_link(message):
         message_dict.update(get_embeds(message.embeds))
         if message_dict['url'] != '':
             saved, errors = link_to_db(message.author.id, message.channel.id, message.server, message_dict)
-            pass
-
             if saved:
                 return (True, errors)
         else:
@@ -176,16 +175,13 @@ def link_to_db(user_id, channel_id, server, message_dict):
     if message_dict['tags'] == '':
         message_dict['tags'] = 'Untagged'
 
-    if message_dict['title'] == '':
-        message_dict['title'] = 'Lorem Ipsum Title'
-
     tags = message_dict['tags'].split(",")
 
-    if message_dict['media_url'] = '':
-        message_dict['media_url'] = '%s/pic/no_thumbnail.png' % (STATIC_URL)
-    if message_dict['title'] = '':
+    if message_dict['media_url'] == '':
+        message_dict['media_url'] = '/pic/no_thumbnail.png'
+    if message_dict['title'] == '':
         message_dict['title'] = findTitle(message_dict['url'])
-    if message_dict['description'] = '':
+    if message_dict['description'] == '':
         pass
     try:
         # Create or retrieve user
@@ -226,7 +222,7 @@ def link_to_db(user_id, channel_id, server, message_dict):
         errors = ("%s%s\n" % (errors, e.message))
         return False, errors
 
-    logger.info("Saved! url: %s\ntitle: %s\ntags: %s" %(message_dict['url'],message_dict['title'],message_dict['tags']))
+    logger.info("Saved!\n url: '%s', title: '%s', tags: '%s', description: '%s', media_url: '%s', " %(message_dict['url'],message_dict['title'],message_dict['tags'],message_dict['description'],message_dict['media_url']))
     logger.info("----------")
     return True, errors
 
@@ -248,15 +244,12 @@ def get_embeds(embeds):
     return embeds_dict
 
 
-# THIS FUNCTION IS VERY BAD!!!
-# If there's no </title> tag on the site it returns all the html after starting tag
-# If there's no start tag, it throws an indexError: list index out of range
-# Maybe use something else
-# IF THIS IS CHANGED TAKE OFF urllib.request IMPORT TOO
 
-#TODO: Change the method or add handling in case there's no title in the link
-# return 'Untitled' if no title is found!
 def findTitle(url):
     webpage = urllib.request.urlopen(url).read()
-    title = str(webpage).split('<title>')[1].split('</title>')[0]
+    soup = BeautifulSoup(webpage, 'html.parser')
+    if soup.title:
+        title = soup.title.string
+    else:
+        title = 'Untitled'
     return title
