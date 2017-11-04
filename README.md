@@ -75,6 +75,8 @@ Discord bot that gathers all links shared in the specified channel and posts the
 
         # As default sentry is disabled in debug mode so sentry key can be empty string
         SENTRY_KEY = ''
+
+        RAVEN_CONFIG = {}
         ```
 
 ### Setting up mock data for UI
