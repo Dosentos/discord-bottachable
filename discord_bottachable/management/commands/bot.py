@@ -29,6 +29,13 @@ async def on_ready():
 # In here happens all the magic...
 @client.event
 async def on_message(message):
+    await handle_messages(message)
+
+@client.event
+async def on_message_edit(before, after):
+    await handle_messages(after)
+
+async def handle_messages(message):
     if message.content.startswith('!test'):
         counter = 0
         tmp = await client.send_message(message.channel, 'Calculating messages...')
@@ -42,7 +49,9 @@ async def on_message(message):
         await client.send_message(message.channel, 'Done sleeping')
 
     elif message.content.startswith('!link'):
-        message_saved, error_message = handle_link(message)
+        message_saved = False
+        error_message = ''
+        # message_saved, error_message = handle_link(message)
         if message_saved:
             await client.send_message(message.channel, "Thank you, link published on discord-bottachable.discordapp.com")
         else:
