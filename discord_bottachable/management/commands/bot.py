@@ -236,10 +236,12 @@ def get_embeds(embeds):
             embeds_dict['title'] = e['title']
         else:
             logger.info('Embeds have no title!')
-        if 'thumbnail' in e and 'url' in e['thumbnail']:
+        if 'video' in e and 'url' in e['video']:
+            embeds_dict['media_url'] = e['video']['url']
+        elif 'thumbnail' in e and 'url' in e['thumbnail']:
             embeds_dict['media_url'] = e['thumbnail']['url']
         else:
-            logger.info('Embeds have no thubnail or thubnail url!')
+            logger.info('Embeds have no thumbnail or thumbnail url!')
     return embeds_dict
 
 # This function is called if no title has been found elsewhere. 
