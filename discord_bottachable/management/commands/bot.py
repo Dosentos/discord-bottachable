@@ -181,7 +181,6 @@ def link_to_db(user_id, channel_id, server, message_dict):
             message_dict['tags'] = "%s,%s" % (message_dict['tags'], message_dict['provider'])
     elif message_dict['tags'] == '':
         message_dict['tags'] = 'untagged'
-    logger.info("############ tags before: %s" % message_dict['tags'])
 
     tags = message_dict['tags'].split(",")
 
