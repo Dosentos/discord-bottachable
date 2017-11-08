@@ -159,12 +159,13 @@ def split_link_message(msg):
                 message_dict['title'] = "%s %s" %(message_dict['title'], part)
 
             elif tags:
+                part = part.lower()
                 if message_dict['tags'] == '':
                     message_dict['tags'] = part
                 else:
                     message_dict['tags'] = "%s,%s" %(message_dict['tags'], part)
 
-    message_dict['url'] = message_dict['url'].strip(" ")
+    message_dict['url'] = message_dict['url'].strip(' ')
     message_dict['title'] = message_dict['title'].strip(' ')
     message_dict['tags'] = message_dict['tags'].strip(' ')
     return message_dict
@@ -172,8 +173,15 @@ def split_link_message(msg):
 # This function saves a link to database
 def link_to_db(user_id, channel_id, server, message_dict):
     errors = ''
-    if message_dict['tags'] == '':
-        message_dict['tags'] = 'Untagged'
+
+    if message_dict['provider'] not in message_dict['tags'] and message_dict['provider'] != '':
+        if message_dict['tags'] == '':
+            message_dict['tags'] =  message_dict['provider']
+        else:
+            message_dict['tags'] = "%s,%s" % (message_dict['tags'], message_dict['provider'])
+    elif message_dict['tags'] == '':
+        message_dict['tags'] = 'untagged'
+    logger.info("############ tags before: %s" % message_dict['tags'])
 
     tags = message_dict['tags'].split(",")
 
@@ -209,10 +217,8 @@ def link_to_db(user_id, channel_id, server, message_dict):
         # Create or retrieve tags and make connection to the link
         for tag in tags:
             tag = ''.join(e for e in tag if e.isalnum() or e == '-')
-
             if tag == '':
                 continue
-
             link.tags.add(Tag.objects.get_or_create(name=tag)[0])
 
     except Exception as e:
@@ -224,24 +230,33 @@ def link_to_db(user_id, channel_id, server, message_dict):
     logger.info("----------")
     return True, errors
 
-# this function saves the specific embeds to embeds_dicts and returns them
+# This function saves the specific embeds to embeds_dicts and returns them
 def get_embeds(embeds):
-    embeds_dict = {'description':'', 'media_url':'','title':''}
+    logger.info(embeds)
+    embeds_dict = {'description':'', 'media_url':'','title':'', 'provider':''}
     for e in embeds:
         if 'description'  in e:
             embeds_dict['description'] = e['description']
         else:
             logger.info('Embeds have no description!')
+
         if 'title' in e:
             embeds_dict['title'] = e['title']
         else:
             logger.info('Embeds have no title!')
+
         if 'video' in e and 'url' in e['video']:
             embeds_dict['media_url'] = e['video']['url']
         elif 'thumbnail' in e and 'url' in e['thumbnail']:
             embeds_dict['media_url'] = e['thumbnail']['url']
         else:
             logger.info('Embeds have no thumbnail or thumbnail url!')
+
+        if 'provider' in e and  'name' in e['provider']:
+            embeds_dict['provider'] = e['provider']['name'].lower().strip(' ')
+        else:
+            logger.info('Embeds have no provider name')
+
     return embeds_dict
 
 # This function is called if no title has been found elsewhere. 
