@@ -177,8 +177,6 @@ def link_to_db(user_id, channel_id, server, message_dict):
 
     tags = message_dict['tags'].split(",")
 
-    if message_dict['media_url'] == '':
-        message_dict['media_url'] = '/pic/no_thumbnail.png'
     if message_dict['title'] == '':
         message_dict['title'] = findTitle(message_dict['url'])
     if message_dict['description'] == '':
