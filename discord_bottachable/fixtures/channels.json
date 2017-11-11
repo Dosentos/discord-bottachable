@@ -1,0 +1,61 @@
+[{
+		"model": "discord_bottachable.channel",
+		"pk": 1,
+		"fields": {
+            "listen": 1,
+            "server_id": 1,
+			"discord_id": "350529796943642626",
+            "name": "kenraali"
+		}
+	},
+    {
+		"model": "discord_bottachable.channel",
+		"pk": 2,
+		"fields": {
+            "listen": 1,
+            "server_id": 1,
+			"discord_id": "355606102550773762",
+            "name": "ohjeita-yms"
+		}
+	},
+    {
+		"model": "discord_bottachable.channel",
+		"pk": 3,
+		"fields": {
+            "listen": 1,
+            "server_id": 1,
+			"discord_id": "350538172230533123",
+            "name": "muut-linkit-yms"
+		}
+	},
+    {
+		"model": "discord_bottachable.channel",
+		"pk": 4,
+		"fields": {
+            "listen": 1,
+            "server_id": 1,
+			"discord_id": "355658976207306752",
+            "name": "kouluttajakoulutus"
+		}
+	},
+    {
+		"model": "discord_bottachable.channel",
+		"pk": 5,
+		"fields": {
+            "listen": 1,
+            "server_id": 1,
+			"discord_id": "359078507873304578",
+            "name": "fasilitointiesitys"
+		}
+	},
+    {
+		"model": "discord_bottachable.channel",
+		"pk": 6,
+		"fields": {
+            "listen": 1,
+            "server_id": 1,
+			"discord_id": "365491118667726859",
+            "name": "bot-spam-channel"
+		}
+	}
+]

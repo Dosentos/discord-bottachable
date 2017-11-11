@@ -6,11 +6,22 @@ from django.db import models
 
 class Server(models.Model):
     discord_id = models.CharField(max_length=64)
+    log_channel = models.ForeignKey('Channel',null=True)
     name = models.CharField(max_length=128)
 
 
-class User(models.Model):
+class Channel(models.Model):
     discord_id = models.CharField(max_length=64)
+    server_id = models.ForeignKey('Server')
+    listen = models.PositiveSmallIntegerField()
+    name = models.CharField(max_length=100)
+
+
+class User(models.Model):
+    server_id = models.ForeignKey('Server')
+    discord_id = models.CharField(max_length=64)
+    username = models.CharField(max_length=128)
+    rank = models.PositiveSmallIntegerField()
 
 
 class Tag(models.Model):
@@ -20,7 +31,7 @@ class Tag(models.Model):
 class Link(models.Model):
     source = models.CharField(max_length=256)
     user_id = models.ForeignKey('User')
-    channel_id = models.CharField(max_length=64)
+    channel_id = models.ForeignKey('Channel')
     server_id = models.ForeignKey('Server')
     description = models.CharField(max_length=2048)
     title = models.CharField(max_length=128)

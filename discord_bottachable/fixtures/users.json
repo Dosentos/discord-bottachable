@@ -2,6 +2,9 @@
 		"model": "discord_bottachable.user",
 		"pk": 1,
 		"fields": {
+            "server_id": 1,
+            "username": "Mehxit",
+            "rank": 1,
 			"discord_id": "137230245039308800"
 		}
 	},
@@ -9,6 +12,9 @@
 		"model": "discord_bottachable.user",
 		"pk": 2,
 		"fields": {
+            "server_id": 1,
+            "username": "tuomas",
+            "rank": 1,
 			"discord_id": "136854973479649280" 
 		}
 	},
@@ -16,6 +22,9 @@
 		"model": "discord_bottachable.user",
 		"pk": 3,
 		"fields": {
+            "server_id": 1,
+            "username": "Dosentti",
+            "rank": 1,
 			"discord_id": "165149975100129280"
 		}
 	}
