@@ -1,20 +1,45 @@
 {% extends "base.html" %} 
-{% load staticfiles %} 
+{% load staticfiles %}
+
+{% block jumbotron %}
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+	<img class="img-fluid" src="{% static 'img/bottachable_logo2.png' %}" id="indexJumbotronLogo"/>
+  </div>
+  <a href="https://github.com/Dosentos/discord_bottachable" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="row">
-    <h1>Hello World</h1>
-    {% if servers.count == 0 %}
-        <h2>Looks like I'm not in any server yet :(</h2>
-        <p>Click <a href="#">here</a> to add me to your own server!</p>
-    {% else %}
-        <h2>I'm currently collecting links for these servers:</h2>
-        <ul>
-            {% for s in servers %}
-                <li><a href="./{{ s.discord_id }}">{{ s.name }}</a></li>
-            {% endfor %}
-        </ul>
-        <p>Click <a href="#">here</a> to add me to your own server!</p>
-    {% endif %}
+	<div class="col-sm" id="indexContent-left">
+		<h1>About Bottachable</h1>
+		<p>Developed as a school project in Tampere University of Applied Sciences,
+		Finland, Discord Bottachable is an open source bot / web site for easily collecting and viewing
+		desired links from Discord chat.</p>
+		<p>Links are collected to a database using a bot command and listed on a server specific website.
+		The links can be given tags for searching by topic.</p>
+	</div>
+	<div class="col-sm">
+	
+		{% if servers.count == 0 %}
+			<h2>Discord Bottachable is currently not in use on any server.</h2>
+		{% else %}
+			<h2>Discord Bottachable is currently in use on {{servers.count}} server(s).</h2>
+		{% endif %}
+		
+		<p>To add Bottachable to your server you have to have manage server permission on the server.</p>
+		<a href="https://discordapp.com/oauth2/authorize?client_id=356739392003375104&scope=bot">
+		<button class="btn btn-default" id="addButton">Add to server</button></a>
+
+		<h3>Instructions:</h3>
+		<ol id="instructions">
+			<li><p>Click the blue "Add to server"-button</p></li>
+			<li><p>Login to discord on the webpage where you are redirected</p></li>
+			<li><p>Select a server where bot is added from dropdown and click "Authorize"-button</p></li>
+			<li><p>Solve the CAPTCHA if asked</p></li>
+			<li><p>Bottachable should now be on your server</p></li>
+		</ol>
+	</div>
 </div>
 {% endblock %}

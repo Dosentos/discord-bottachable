@@ -7,11 +7,10 @@
 
 /* https://github.com/VPenkov/okayNav-vanillaJS */
 header {
-    background-color: #ffffff;
     padding: 15px 15px;
     display: flex;
     flex-wrap: wrap;
-    background-color: #f8f9fa;
+	background-color: #7289DA;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
@@ -30,7 +29,7 @@ header > .brand {
     align-self: center;
     margin-right: 15px;
     font-weight: unset;
-    color: rgba(0,0,0,.9);
+    color: rgba(255,255,255,.9);
     font-size: 1.25rem;
     text-decoration: inherit;
 }
@@ -110,7 +109,7 @@ header > .measurement-area > #navigation > #navigation-sidebar {
 
 [data-okay-overflow] {
     z-index: 9999;
-    background-color: #ffffff;
+    background-color: #2C2F33;
     bottom: 0;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.125);
     list-style: none;
@@ -123,6 +122,7 @@ header > .measurement-area > #navigation > #navigation-sidebar {
     visibility: visible;
     width: 260px;
     margin-bottom: 0;
+	border: 1px solid #23272A;
 }
 
 [data-okay-overflow][aria-hidden] {
@@ -133,6 +133,12 @@ header > .measurement-area > #navigation > #navigation-sidebar {
 
 [data-okay-overflow] > li {
     float: none;
+	width: 100%;
+	padding: 5px;
+}
+[data-okay-overflow] > li:hover, [data-okay-overflow] > li:hover > a {
+	background-color: #23272A;
+	color: #7289DA;
 }
 
 .measurement-area {
@@ -168,7 +174,7 @@ header > .measurement-area > #navigation > #navigation-sidebar {
 }
 
 .okaynav-link > a {
-    color: rgba(0,0,0,.5);
+    color: rgba(255,255,255,1);
 }
 
 .okaynav-link > a:hover {
@@ -178,4 +184,68 @@ header > .measurement-area > #navigation > #navigation-sidebar {
 /* Bootstrap card */
 .card {
     margin-bottom: 15px;
+	background-color: #2C2F33;
+}
+
+/* Search button */
+.btn-outline-success{
+	background-color: #fff;
+	color: rgba(0,0,0,.5);
+	border-color: transparent;
+}
+.btn-outline-success:hover, .btn-outline-success:focus{
+	color: #fff;
+	background-color: #2C2F33;
+	border-color: rgba(0,0,0,.5);
+	box-shadow: none;
+}
+.btn-outline-success:focus{
+	box-shadow: 0 0px 2px 2px rgba(255,255,255,.5);
+}
+html, body{
+	min-height:100vh;
+	background-color: #23272A;
+	margin: 0;
+	padding: 0;
+}
+body{
+	color: #fff;
+	min-height:100vh;
+}
+p{
+	opacity: .5;
+	margin: 0;
+}
+.container{
+	padding-bottom: 12px;
+}
+.jumbotron{
+	background-color: #7289DA;
+}
+#addButton{
+	 background-color: #7289DA;
+	 color: #ffffff;
+	 margin: 16px 0;
+}
+#addButton:hover, #addButton:focus{
+	color: #fff;
+	background-color: #2C2F33;
+	border-color: #7289DA;
+	box-shadow: none;
+}
+#addButton:focus{
+	box-shadow: 0 0px 2px 2px #7289DA;
+}
+#indexJumbotronLogo{
+	max-width: 299px;
+	margin: auto;
+	display: block;
+}
+#instructions{
+	padding-left: 15px;
+}
+@media screen and (min-width: 576px) {
+	#indexContent-left{
+		border-right: 1px solid rgba(0, 0, 0, .1);
+	}
 }
