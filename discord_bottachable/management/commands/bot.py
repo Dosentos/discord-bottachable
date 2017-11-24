@@ -267,47 +267,54 @@ def handle_link(message, rows):
 
     return (False, errors)
 
+# Find possible url in a string
+def find_url(msg):
+    return re.search('http(|s):\/\/|www\.', msg)
+
+
+# Finds title and tags from the !link command message's words
+# Return list of the words found
+def get_words(words, start_word, stop_word, url):
+    results = []
+    # Loop through all given words
+    for word in words:
+        # If the word is just the start_word, continue
+        if word == start_word: continue
+
+        # If start_word is tied to the word without space, remove it
+        if start_word in word: word = word.replace(start_word, '')
+        # Break if stop word is found
+        if stop_word in word: break
+        # Title and tags can have url if another url is found already
+        if not find_url(word) or url:
+            if start_word == 'tags:':
+                # Finding tags, there might be ',' in the word/tag, remove that
+                results.append(word.strip(','))
+                continue
+            results.append(word)
+
+    return results
+
+
 # This method splits user's message to url, title and tags.
 # Returns a dictionary
 def split_link_message(msg):
-    message_dict = {'url':'', 'title':'', 'tags': ''}
-    title = False
-    tags = False
-    url_set = False
-    logger.info("Message: %s" % (msg))
-    splitted_message = re.split('(tags:|title:)', msg)
+    data = {'url': '', 'title': '', 'tags': []}
+    words = msg.split()
+    # Loop through command message's words
+    for index, word in enumerate(words):
+        # If word contains url and there is no url set yet, set this as our url
+        if find_url(word) and not data['url']:
+            data['url'] = word
+        elif 'title:' in word and not data['title']:
+            data['title'] = ' '.join(
+                get_words(words[index:], 'title:', 'tags:', data['url'])
+            )
+        elif 'tags:' in word and not data['tags']:
+            data['tags'] = get_words(words[index:], 'tags:', 'title:', data['url'])
+    
+    return data
 
-    for part in splitted_message:
-        if 'http://' in part or 'https://' in part or 'www.' in part:
-            if not url_set:
-                message_dict['url'] = part
-                url_set = True
-            else:
-                logger.warn("Warning, user's message contains more than one link")
-
-        elif 'title:' in part:
-            title = True
-            tags = False
-
-        elif 'tags:' in part:
-            title = False
-            tags = True
-
-        else:
-            if title:
-                message_dict['title'] = "%s %s" %(message_dict['title'], part)
-
-            elif tags:
-                part = part.lower()
-                if message_dict['tags'] == '':
-                    message_dict['tags'] = part
-                else:
-                    message_dict['tags'] = "%s,%s" %(message_dict['tags'], part)
-
-    message_dict['url'] = message_dict['url'].strip(' ')
-    message_dict['title'] = message_dict['title'].strip(' ')
-    message_dict['tags'] = message_dict['tags'].strip(' ')
-    return message_dict
 
 # This function saves a link to database
 def link_to_db(user_id, channel_id, server, message_dict, rows, message):
@@ -323,14 +330,9 @@ def link_to_db(user_id, channel_id, server, message_dict, rows, message):
         message_dict['url'] = verified_url
 
     if message_dict['provider'] not in message_dict['tags'] and message_dict['provider'] != '':
-        if message_dict['tags'] == '':
-            message_dict['tags'] =  message_dict['provider']
-        else:
-            message_dict['tags'] = "%s,%s" % (message_dict['tags'], message_dict['provider'])
-    elif message_dict['tags'] == '':
-        message_dict['tags'] = 'untagged'
-
-    tags = message_dict['tags'].split(",")
+        message_dict['tags'].append(message_dict['provider'])
+    elif len(message_dict['tags']) == 0:
+        message_dict['tags'].append('untagged')
 
     if message_dict['title'] == '':
         message_dict['title'] = findTitle(message_dict['url'])
@@ -371,7 +373,7 @@ def link_to_db(user_id, channel_id, server, message_dict, rows, message):
         return False, errors
 
     # Create or update/retrieve tags and make connection to the link
-    for tag in tags:
+    for tag in message_dict['tags']:
         tag = ''.join(e for e in tag if e.isalnum() or e == '-')
         if tag == '':
             continue
